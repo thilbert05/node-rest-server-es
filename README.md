@@ -2,4 +2,6 @@
 
 Para instalar los paquetes del servidor ejecutar:
 
-```npm install´´´
+````
+npm install
+````
