@@ -3,9 +3,12 @@ const bcrypt = require('bcrypt');
 const _ = require('underscore');
 
 const Usuario = require('../models/usuario');
+const { isAuth, isAdmin } = require('../middlewares/is-auth');
+
 const app = express();
 
-app.get('/usuario', (req, res) => {
+app.get('/usuario', isAuth, (req, res) => {
+
   const desde = +req.query.desde || 0;
   const porPagina = +req.query.limite || 5;
   let usuariosObtenidos = [];
@@ -32,9 +35,9 @@ app.get('/usuario', (req, res) => {
     });
 });
 
-app.post('/usuario', (req, res) => {
+app.post('/usuario', [isAuth, isAdmin], (req, res) => {
   let body = req.body;
-
+  
   const usuario = new Usuario({
     nombre: body.nombre,
     email: body.email,
@@ -59,8 +62,9 @@ app.post('/usuario', (req, res) => {
 
 });
 
-app.put('/usuario/:id', (req, res) => {
+app.put('/usuario/:id', [isAuth, isAdmin],(req, res) => {
   const id = req.params.id;
+  console.log(req.usuario);
 
   let body = _.pick(req.body, ['nombre', 'email', 'img', 'role']);
 
@@ -106,7 +110,7 @@ app.put('/usuario/:id', (req, res) => {
 //   });
 // });
 
-app.delete('/usuario/:id', (req, res) => {
+app.delete('/usuario/:id', [isAuth, isAdmin], (req, res) => {
   let id = req.params.id;
 
   const body = _.pick(req.body, ['estado']);

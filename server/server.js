@@ -1,20 +1,24 @@
 require('./config/config');
 const express = require('express')
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const colors = require('colors');
 
 const app = express();
 
-const usuarioRoutes = require('./routes/usuario');
+//Configuración global de rutas
+const Routes = require('./routes/index');
 
-const bodyParser = require('body-parser');
-
+//Configuracion del body parser
 app.use(express.urlencoded({extended: false}));
 
 app.use(express.json());
 
-app.use(usuarioRoutes);
+//Rutas globales
+app.use(Routes);
 
+
+//Conexión a base de datos y arranque del servidor
 mongoose.connect(process.env.URLDB, {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true})
 .then(result => {
   console.log('Base de datos ONLINE'.green)
