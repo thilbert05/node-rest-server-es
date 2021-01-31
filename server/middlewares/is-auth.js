@@ -28,6 +28,26 @@ const isAuth = (req, res, next) => {
   next();
 };
 
+//===========================
+// Verificar Token para imagen
+//===========================
+const isAuthForImg = (req, res, next) => {
+  let token = req.query.token;
+  let decodedToken;
+  try {
+    decodedToken = jwt.verify(token, process.env.SEED);
+  } catch (error) {
+    if (error) {
+      res.status(501).json({
+        ok: false,
+        message: 'Token no es válido'
+      })
+    }
+  }
+  req.usuario = decodedToken.usuario;
+  next();
+};
+
 const isAdmin = (req, res, next) => {
   const usuario = req.usuario;
   if (!usuario) {
@@ -47,5 +67,6 @@ const isAdmin = (req, res, next) => {
 
 module.exports = {
   isAuth,
-  isAdmin
+  isAdmin,
+  isAuthForImg
 };
